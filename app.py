@@ -2,6 +2,22 @@ import streamlit as st
 
 st.set_page_config(page_title="WinGo Analyzer", layout="centered")
 
+# Mobile par buttons ko horizontal rakhne ke liye CSS
+st.markdown("""
+<style>
+    div[data-testid="column"] {
+        width: 20% !important;
+        flex: 1 1 20% !important;
+        min-width: 20% !important;
+    }
+    div.stButton > button {
+        width: 100% !important;
+        padding: 8px 0px !important;
+        font-size: 16px !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.title("🎯 WinGo Analyzer")
 
 # Session state initialize karna
@@ -10,7 +26,7 @@ if 'numbers' not in st.session_state:
 
 # Function: Number add karne ke liye
 def add_number(num):
-    if len(st.session_state.numbers) >= 20:  # Sirf pichle 20 results
+    if len(st.session_state.numbers) >= 20:
         st.session_state.numbers.pop(0)
     st.session_state.numbers.append(num)
 
@@ -20,20 +36,21 @@ def clear_numbers():
 
 st.write("Game ka result aate hi niche wale button dabaiye:")
 
-# 0-9 ke buttons ka layout
-cols = st.columns(5)
+# 0-4 ke buttons (pehli row)
+cols1 = st.columns(5)
+for i in range(5):
+    with cols1[i]:
+        if st.button(str(i), key=f"btn_{i}", use_container_width=True):
+            add_number(i)
+            st.rerun()
 
-for i in range(10):
-    if i < 5:
-        with cols[i]:
-            if st.button(str(i), use_container_width=True):
-                add_number(i)
-                st.rerun()
-    else:
-        with cols[i - 5]:
-            if st.button(str(i), use_container_width=True):
-                add_number(i)
-                st.rerun()
+# 5-9 ke buttons (dusri row)
+cols2 = st.columns(5)
+for i in range(5, 10):
+    with cols2[i - 5]:
+        if st.button(str(i), key=f"btn_{i}", use_container_width=True):
+            add_number(i)
+            st.rerun()
 
 # Delete aur Clear buttons
 st.write("")
